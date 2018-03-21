@@ -1,3 +1,10 @@
+# Author - Varun Bhandary
+# Objective -
+# 1. Read the required data files
+# 2. Subset data for reading only Baltimore City Data from the data frame.
+# 3. Aggregate data based on Year, Type
+# 4. Generate required Plot and save to PNG output format 
+
 library(ggplot2)
 library(dplyr)
 

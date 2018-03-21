@@ -1,3 +1,11 @@
+# Author - Varun Bhandary
+# Objective -
+# 1. Read the required data files
+# 2. Create logical vectors for Coal and Combustion
+# 3. Make a list of SCC Codes based on the logical vectors
+# 3. Subset data based on the list of SCC Codes from above steps, Aggregate data
+# 4. Generate required Plot and save to PNG output format 
+
 library(ggplot2)
 library(dplyr)
 
