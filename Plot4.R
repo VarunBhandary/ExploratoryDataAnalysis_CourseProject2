@@ -1,25 +1,30 @@
 library(ggplot2)
 library(dplyr)
 
-dataset <- readRDS("./Dataset/summarySCC_PM25.rds")
+dataset_factData <- readRDS("./Dataset/summarySCC_PM25.rds")
 dataset_classificationCodes <- readRDS("./Dataset/Source_Classification_Code.rds")
 
-dataset$year <- as.factor(dataset$year)
-dataset$type <- as.factor(dataset$type)
-dataset$Emissions <- as.numeric(dataset$Emissions)
+dataset <- merge(dataset_factData, dataset_classificationCodes, by = c("SCC","SCC"))
 
-dataset
+combustionRelated <- grepl("comb", dataset_classificationCodes[, "SCC.Level.One"], ignore.case=TRUE)
+coalRelated <- grepl("coal", dataset_classificationCodes[, "SCC.Level.Four"], ignore.case=TRUE) 
+coalCombustionSCC <- dataset_classificationCodes[combustionRelated & coalRelated, "SCC"]
 
-datasetSubBaltimore <- subset(dataset, dataset$fips=="24510")
+dataset_coalcombustion <- dataset[dataset[,"SCC"] %in% coalCombustionSCC,]
 
-totalBaltimoreDataSet_byYearType <- aggregate(Emissions ~ year + type, data=datasetSubBaltimore, sum)
+totaldataset_coalcombustion <- aggregate(Emissions ~ year, data=dataset_coalcombustion, sum)
 
-png(filename="./plot3.png")
+
+png(filename="./plot4.png")
 
 print(
-  ggplot(totalBaltimoreDataSet_byYearType, aes(x=year, y=Emissions, fill = type)) +
-    geom_bar(stat = "identity") +
-    facet_grid(~type, scale='free_x')
+  
+  barplot(totaldataset_coalcombustion$Emissions, totaldataset_coalcombustion$year, 
+          xlab="Year", 
+          ylab="PM2.5 Emission (In Tons)", 
+          col = "darkblue", 
+          main = "Total emissions from PM2.5 from combustion of Coal in the US from 1999 to 2008"
+  )
 )
 
 dev.off()
